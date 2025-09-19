@@ -11,7 +11,7 @@ function [SEQ, SIM] = MRF_read_seq_file(seq_file, f0, adc_time_stamps, soft_dela
 % f0:              larmor frequency [Hz] for off-resonant pulses or adcs
 % adc_time_stamps: nadc x 1 array of adc time stamps [s]
 % soft_delays:     n x 1 array of input delays (e.g. for RR tuning)
-% kz_part:         no of kz partition to be simulated
+% kz_part:         0 -> no kz paritions; 1 -> search for START/STOP labels and remove unneccesary kz partitions
 % echo_mode:       'spiral_out' 'center' 'auto'
 % dt:              target raster time for the simulation (default 1us)
 % flag_plot:       0 -> off; 1 -> calc full waveform arrays; 2 -> plot
@@ -543,27 +543,27 @@ end
 
 %% -------------------- delete unnecessary blocks in case of kz partitions --------------------
 function SEQ = filter_kz_partitions(SEQ, kz_part)
-    kz_partitions = []; % 2d array, column 1 -> block no, column 2 -> partition no    
-    count = 1;
     if ~isempty(kz_part)
-        for j = 1:size(SEQ.BLOCKS,1)
-            if SEQ.BLOCKS(j,8)>0
-                temp_ext_id   = SEQ.BLOCKS(j, 8);
-                temp_ext_type = SEQ.EXTENSIONS(temp_ext_id, 2);
-                temp_ext_no   = SEQ.EXTENSIONS(temp_ext_id, 3);
-                if strcmp(SEQ.EXT_SPECS(temp_ext_type).type, 'LABELSET')
-                    temp_ext_vals = strsplit(SEQ.EXT_SPECS(temp_ext_type).vals(temp_ext_no), ' ');
-                    if strcmp(temp_ext_vals(3), 'PAR')
-                        kz_partitions(count,1) = j;
-                        kz_partitions(count,2) = str2num(temp_ext_vals(2));
-                        count = count + 1;
+        if kz_part == 1
+            for j = 1:size(SEQ.BLOCKS,1)
+                if SEQ.BLOCKS(j,8)>0
+                    temp_ext_id   = SEQ.BLOCKS(j, 8);
+                    temp_ext_type = SEQ.EXTENSIONS(temp_ext_id, 2);
+                    temp_ext_no   = SEQ.EXTENSIONS(temp_ext_id, 3);
+                    if strcmp(SEQ.EXT_SPECS(temp_ext_type).type, 'LABELSET')
+                        temp_ext_vals = strsplit(SEQ.EXT_SPECS(temp_ext_type).vals(temp_ext_no), ' ');
+                        if strcmp(temp_ext_vals(3), 'START')
+                            ind_start = j;
+                        end
+                        if strcmp(temp_ext_vals(3), 'STOP')
+                            ind_stop = j;
+                        end
                     end
                 end
             end
+            SEQ.BLOCKS = SEQ.BLOCKS(ind_start+1:ind_stop-1,:);
+            SEQ.BLOCKS(:,1) = 1:size(SEQ.BLOCKS,1);
         end
-        ind_start  = kz_partitions(find(kz_partitions(:,2)==kz_part),1);
-        ind_end    = kz_partitions(find(kz_partitions(:,2)==kz_part)+1,1);
-        SEQ.BLOCKS = SEQ.BLOCKS(ind_start:ind_end,:);
     end
 end
 

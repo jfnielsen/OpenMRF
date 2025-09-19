@@ -124,7 +124,8 @@ temp_start_stop = 1;
 % pre-saturation
 SAT_add();
 
-for loop_kz = SPI.kz_indc%SPI.kz_list
+for loop_kz = SPI.kz_list
+% for loop_kz = SPI.kz_indc % use this for tests with only the center kz partition
 
     % start simulation of .seq file (kz=0)
     if (loop_kz == SPI.kz_indc) && (temp_start_stop==1)
