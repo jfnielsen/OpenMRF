@@ -1,12 +1,21 @@
-function checkexists(filepath)
+function checkexists(filepath, options)
+    arguments
+        filepath char
+        options.file_qualifier char = ''
+    end
+    if ~isempty(options.file_qualifier)
+        qualifier = [' ' options.file_qualifier];
+    else
+        qualifier = options.file_qualifier;
+    end
     % Check that a file exists at filepath
-    if ~isfile(filepath)
-        error('OpenMRF:FileNotFoundError', ...
-              'Required file file at ''%s'' does not exist!', ...
-              filepath);
-    elseif isfolder(filepath)
+    if isfolder(filepath)
         error('OpenMRF:IsADirectoryError', ...
-              'Expected a file but found a directory at ''%s''', ...
-              filepath);
+              'Expected a%s file but found a directory at ''%s''', ...
+              qualifier, filepath);
+    elseif ~isfile(filepath)
+        error('OpenMRF:FileNotFoundError', ...
+              'Required%s file at ''%s'' does not exist!', ...
+              qualifier, filepath);
     end 
 end
