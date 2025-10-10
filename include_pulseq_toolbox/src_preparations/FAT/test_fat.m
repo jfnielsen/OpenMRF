@@ -1,6 +1,9 @@
 %% compare: sigpy SLR vs pulseq sinc
 clear
 pulseq_init();
+
+FOV.dx = 5*1e-3;
+FOV.dy = 5*1e-3;
 FOV.dz = 5*1e-3;
 
 system.B0 = 1.5;
@@ -27,11 +30,11 @@ parfor j=1:n
     dw_ = 2*pi*df(j);
     M_  = [0; 0; 1];    
     for k=1:numel(rf)
-        w1x_ = 2*pi * f1(k) * cos(phi(k));
-        w1y_ = -2*pi * f1(k) * sin(phi(k));
-        B_   = [  0     dw_    w1y_;
+        w1x_ = 2*pi * real(rf(k));
+        w1y_ = 2*pi * imag(rf(k));
+        B_   = [  0     dw_    -w1y_;
                  -dw_   0      w1x_;
-                 -w1y_  -w1x_  0 ];
+                 w1y_   -w1x_  0 ];
         M_ = expm(B_*dt) * M_;
     end    
     M_sim(j,:) = M_(:);
