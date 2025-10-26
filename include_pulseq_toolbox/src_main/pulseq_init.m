@@ -19,6 +19,9 @@ end
 if ~exist('flag_GE', 'var')
     flag_GE = 0; % 0: off, 1: GE segment TRID labels
 end
+if ~exist('flag_UI', 'var')
+    flag_UI = 0; % 0: off, 1: UI LIN labels
+end
 
 % load user information
 if ~exist('pulseq_scanner', 'var')
@@ -29,6 +32,11 @@ end
 % activate GE TRID labels
 if strcmp(pulseq_scanner(1:2), 'GE')
     flag_GE = 1;
+end
+
+% activate United Imaging LIN labels
+if strcmp(pulseq_scanner(1:6), 'United')
+    flag_UI = 1;
 end
 
 % init seq object

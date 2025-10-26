@@ -4,6 +4,7 @@ clear
 study = fullfile(study_path, study_name);
 
 twix_obj = mapVBVD(study, 'ignoreSeg', 'removeOS');
+twix_obj = twix_obj{2};
 rawdata  = squeeze(twix_obj.image());
 
 if ndims(rawdata)==4

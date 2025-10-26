@@ -121,6 +121,17 @@ if temp_n_zero > 0
 end
 clear j temp_n_zero;
 
+%% LIN label extension for United Imaging scanners
+if flag_UI==1
+    if loop_NR>0
+        if ~exist('loop_lin', 'var')
+            loop_lin = 1;
+        end
+        seq.addBlock(mr.makeLabel('SET','LIN', loop_lin));
+        loop_lin = loop_lin + 1;
+    end
+end
+
 %% add sequence blocks
 seq.addBlock(TRAJ.Trec);
 seq.addBlock(temp_rf, temp_g_slice);

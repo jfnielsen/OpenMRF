@@ -41,6 +41,17 @@ if flag_GE==1
     end
 end
 
+%% LIN label extension for United Imaging scanners
+if flag_UI==1
+    if loop_NR>0
+        if ~exist('loop_lin', 'var')
+            loop_lin = 1;
+        end
+        seq.addBlock(mr.makeLabel('SET','LIN', loop_lin));
+        loop_lin = loop_lin + 1;
+    end
+end
+
 %% add sequence blocks
 seq.addBlock(SPI.rf(temp_loop), SPI.gz);
 seq.addBlock(SPI.gz_reph(loop_kz));
