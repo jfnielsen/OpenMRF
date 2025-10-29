@@ -165,6 +165,12 @@ if strcmp(PULSEQ.TRAJ.method, 'robison')
     clear rawdata_x1 rawdata_x2 rawdata_x3 rawdata_x4 rawdata_y1 rawdata_y2 rawdata_y3 rawdata_y4
 
     % unwrap signal phases
+    if NR==1
+        rawdata_xA = rawdata_xA.';
+        rawdata_xB = rawdata_xB.';
+        rawdata_yA = rawdata_yA.';
+        rawdata_yB = rawdata_yB.';
+    end
     phase_xA = zeros(size(rawdata_xA));
     phase_xB = zeros(size(rawdata_xB));
     phase_yA = zeros(size(rawdata_yA));
@@ -193,11 +199,19 @@ end
 ktraj_calc   = PULSEQ.PULSEQ_SPI.ktraj_reco;
 ktraj_calc_x = squeeze(ktraj_calc(1,:,:));
 ktraj_calc_y = squeeze(ktraj_calc(2,:,:));
-ktraj_hash   = pulseq_get_wave_hash(ktraj_calc(:));
+if NR==1
+    ktraj_calc_x = ktraj_calc_x.';
+    ktraj_calc_y = ktraj_calc_y.';
+end
+ktraj_hash = pulseq_get_wave_hash(ktraj_calc(:));
 
 %% plot trajectory
 
 if sum(abs(plot_id))>0
+
+if NR==1
+    plot_id = 1;
+end
 
 % get time axis
 Nread_meas = Nread;
