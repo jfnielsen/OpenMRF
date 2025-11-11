@@ -23,8 +23,8 @@ pulseq_init();
 %% import SPI object for trajectory measurement
 
 % load any backup file containing an SPI object
-% load('Q:/data/Pulseq/Pulseq_Workspace/mgram/250910/250910_0059/backup_250910_0059_workspace.mat')
-load('Q:/data/Pulseq/Pulseq_Workspace/mgram/250910/250910_0100/backup_250910_0100_workspace.mat')
+% load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251105/251105_0008/backup_251105_0008_workspace.mat')
+load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251105/251105_0009/backup_251105_0009_workspace.mat')
 
 %% store the original workspace inside the new workspace
 PULSEQ_SPI = PULSEQ;

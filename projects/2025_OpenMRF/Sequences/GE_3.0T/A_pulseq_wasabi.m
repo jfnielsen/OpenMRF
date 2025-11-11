@@ -110,8 +110,18 @@ for loop_NR = 1-ndummy:SPI.NR
     FAT_add(); % fat saturation
 
     % WASABI preparation
-    seq.addBlock(mr.makeLabel('SET', 'TRID', 3)); % TRID label 
-    WASABI_add();
+    if (loop_ppm < WASABI.n_ppm + 1)
+        % seq.addBlock(mr.makeLabel('SET', 'TRID', 3)); % TRID label
+        WASABI.rf.freqOffset = WASABI.f_off(loop_ppm);
+        seq.addBlock(WASABI.rf);
+    else
+        % seq.addBlock(mr.makeLabel('SET', 'TRID', 4)); % TRID label
+        WASABI.rf_dummy = WASABI.rf;
+        WASABI.rf_dummy.signal = WASABI.rf_dummy.signal*0 + 1e-6;
+        WASABI.rf_dummy.freqOffset = 0;
+        seq.addBlock(WASABI.rf_dummy);
+    end
+    seq.addBlock(WASABI.gx_crush, WASABI.gy_crush, WASABI.gz_crush);
 
     % spiral readouts
     SPI_add();
