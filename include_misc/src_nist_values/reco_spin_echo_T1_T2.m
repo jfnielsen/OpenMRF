@@ -163,10 +163,10 @@ end
 
 %% T1 and T2 mapping
 TI = [35 60 95 160 260 430 710 1180 1940 3200] *1e-3;
-[T1_Map, ~, ~, R2_Map_T1] = mg_map_T1(real(Images_T1), TI, mask_fit);
+[T1_Map, ~, ~, R2_Map_T1] = mg_map_T1( double(real(Images_T1)), TI, mask_fit);
 
 TE = [10 15 20 30 40 60 85 120 175 250] *1e-3;
-[T2_Map, ~, R2_Map_T2] = mg_map_T12p( real(Images_T2), TE, mask_fit );
+[T2_Map, ~, R2_Map_T2] = mg_map_T12p( double(real(Images_T2)), TE, mask_fit );
 
 %% select roi centers
 t1cmp  = get_cmp('T1', 1000, 1);
@@ -255,5 +255,5 @@ axis square
 grid on
 set(gca, 'FontName', 'arial', 'FontWeight', 'bold', 'LineWidth', 2, 'Fontsize', 16); 
 
-%% save R2
+%% save results
 save([ref_name '.mat'], 'T1_Map', 'T2_Map', 'R2_Map_T1', 'R2_Map_T2', 'T1', 'T2', 'roi');
