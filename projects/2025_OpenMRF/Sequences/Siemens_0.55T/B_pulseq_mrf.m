@@ -93,7 +93,7 @@ SPI_add_prescans();
 
 % inversion
 if flag_GE==1
-	seq.addBlock(mr.makeDelay(system.gradRasterTime), mr.makeLabel('SET', 'TRID', 2));
+	seq.addBlock(mr.makeDelay(system.gradRasterTime), mr.makeLabel('SET', 'TRID', 4));
 end
 INV_add();
 

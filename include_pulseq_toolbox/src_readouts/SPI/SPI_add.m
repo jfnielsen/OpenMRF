@@ -35,9 +35,9 @@ clear temp_phase;
 %% segment label extension for GE scanners
 if flag_GE==1
     if loop_NR<1
-        seq.addBlock(mr.makeLabel('SET', 'TRID', 0));
+        seq.addBlock(mr.makeLabel('SET', 'TRID', 2));
     else
-        seq.addBlock(mr.makeLabel('SET', 'TRID', 1));
+        seq.addBlock(mr.makeLabel('SET', 'TRID', 3));
     end
 end
 

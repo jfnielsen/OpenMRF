@@ -104,18 +104,16 @@ for loop_NR = 1-ndummy:SPI.NR
     ndummy = 0;
 
     % saturation, recovery, fat
-    seq.addBlock(mr.makeLabel('SET', 'TRID', 2)); % TRID label    
+    seq.addBlock(mr.makeLabel('SET', 'TRID', 4)); % TRID label    
     SAT_add(); % saturation    
     seq.addBlock(mr.makeDelay(SPI.Trec)); % recovery time    
     FAT_add(); % fat saturation
 
     % WASABI preparation
     if (loop_ppm < WASABI.n_ppm + 1)
-        % seq.addBlock(mr.makeLabel('SET', 'TRID', 3)); % TRID label
         WASABI.rf.freqOffset = WASABI.f_off(loop_ppm);
         seq.addBlock(WASABI.rf);
     else
-        % seq.addBlock(mr.makeLabel('SET', 'TRID', 4)); % TRID label
         WASABI.rf_dummy = WASABI.rf;
         WASABI.rf_dummy.signal = WASABI.rf_dummy.signal*0 + 1e-6;
         WASABI.rf_dummy.freqOffset = 0;
@@ -135,3 +133,8 @@ seq.plot('TimeRange',[2 5]*SPI.Trec)
 %% set definitions, check timings/gradients and export/backup files
 filepath = [mfilename('fullpath') '.m'];
 pulseq_exit();
+
+%% export additional .seq file for receive gain adjustment
+if flag_backup>0
+    [seq_adj, external_path_adj] = GE_adj_receive_gain(system, 5, 2.0, SPI.adc, pi/2, FOV.dz, external_path, wip_id);
+end

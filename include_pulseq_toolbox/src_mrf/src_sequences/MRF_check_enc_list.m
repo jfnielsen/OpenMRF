@@ -48,16 +48,4 @@ if MRF.n_adiasl > 0
     end
 end
 
-%% add TRID labels (important for GE use)
-% mr.makeLabel('SET', 'TRID', XXX)
-% 1 -> dummy readout
-% 2 -> readout
-% 3 -> FAT (fat suppression)
-% 4 -> SAT (saturation recovery)
-% 5 -> INV (inversion recovery)
-% 6 -> T2  (T2 preparation)
-% 100 + loop_tSL    -> SL     (depends on number of spin-lock times)
-% 200 + loop_MLEV   -> MLEV   (depends on number of composite pulses)
-% 300 + loop_ADIASL -> ADIASL (depends on number of hypsech pulses)
-
 

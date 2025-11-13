@@ -15,7 +15,7 @@ for loop_MRF = 1 : MRF.n_segm
 
 	% Segment label for GE scanners
 	if flag_GE==1
-		seq.addBlock(mr.makeLabel('SET', 'TRID', loop_MRF+1));
+		seq.addBlock(mr.makeLabel('SET', 'TRID', loop_MRF+3));
 	end
  
     % Trigger: R-Wave

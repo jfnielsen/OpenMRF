@@ -23,8 +23,8 @@ pulseq_init();
 %% import SPI object for trajectory measurement
 
 % load any backup file containing an SPI object
-% load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251105/251105_0008/backup_251105_0008_workspace.mat')
-load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251105/251105_0009/backup_251105_0009_workspace.mat')
+% load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251113/251113_0048/backup_251113_0048_workspace.mat')
+load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251113/251113_0049/backup_251113_0049_workspace.mat')
 
 %% store the original workspace inside the new workspace
 PULSEQ_SPI = PULSEQ;
@@ -102,3 +102,8 @@ seq.plot('TimeRange', mr.calcDuration(TRAJ.Trec)*([TRAJ.Ndummy*4, TRAJ.Ndummy*4+
 %% set definitions, check timings/gradients and export/backup files
 filepath = [mfilename('fullpath') '.m'];
 pulseq_exit();
+
+%% export additional .seq file for receive gain adjustment
+if flag_backup>0
+    [seq_adj, external_path_adj] = GE_adj_receive_gain(system, 5, 2.0, TRAJ.adc, pi/2, TRAJ.slice_thickness, external_path, wip_id);
+end

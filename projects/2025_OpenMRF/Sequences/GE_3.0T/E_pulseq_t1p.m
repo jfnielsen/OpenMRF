@@ -115,13 +115,13 @@ for loop_SL = 1 : SL.nSL
 for loop_NR = 1-SPI.Ndummy : SPI.NR
 
     % saturtion, recovery, fat
-    seq.addBlock(mr.makeLabel('SET', 'TRID', 2)); % TRID label
+    seq.addBlock(mr.makeLabel('SET', 'TRID', 4)); % TRID label
     SAT_add(); % saturation
     seq.addBlock(mr.makeDelay(SPI.Trec)); % recovery time
     FAT_add(); % fat saturation
 
     % sl preparation
-    seq.addBlock(mr.makeLabel('SET', 'TRID', 2+loop_SL)); % TRID label
+    seq.addBlock(mr.makeLabel('SET', 'TRID', 4+loop_SL)); % TRID label
     SL_add();
 
     % spiral imaging
@@ -136,3 +136,8 @@ seq.plot()
 %% set definitions, check timings/gradients and export/backup files
 filepath = [mfilename('fullpath') '.m'];
 pulseq_exit();
+
+%% export additional .seq file for receive gain adjustment
+if flag_backup>0
+    [seq_adj, external_path_adj] = GE_adj_receive_gain(system, 5, 2.0, SPI.adc, pi/2, FOV.dz, external_path, wip_id);
+end

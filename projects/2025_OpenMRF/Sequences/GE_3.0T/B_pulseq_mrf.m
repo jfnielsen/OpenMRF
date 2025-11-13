@@ -89,14 +89,14 @@ INV.inv_rec_time = 0.01;      % [s]  inversion recovery time
 INV = INV_init(INV, FOV, system);
 
 %% noise pre-scans
-SPI.Nnoise = 0;
+SPI.Nnoise = 16;
 SPI_add_prescans();
 
 %% create sequence
 
 % inversion
 if flag_GE==1
-	seq.addBlock(mr.makeLabel('SET', 'TRID', 2));
+	seq.addBlock(mr.makeLabel('SET', 'TRID', 4));
 end
 INV_add();
 
@@ -111,3 +111,8 @@ seq.plot()
 %% set definitions, check timings/gradients and export/backup files
 filepath = [mfilename('fullpath') '.m'];
 pulseq_exit();
+
+%% export additional .seq file for receive gain adjustment
+if flag_backup>0
+    [seq_adj, external_path_adj] = GE_adj_receive_gain(system, 5, 2.0, SPI.adc, pi/2, FOV.dz, external_path, wip_id);
+end
