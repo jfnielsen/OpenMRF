@@ -32,6 +32,9 @@ if isempty(flagRemoveOS)
     flagRemoveOS = 0;
 end
 
+%% check for file existence and emit clear exception upon missing file
+checkexists(study, file_qualifier='scanner raw data');
+
 %% Read Siemens meas file from VB/VD MRI raw data
 if flagRemoveOS==0
     twix_obj = mapVBVD(study, 'ignoreSeg');
@@ -73,6 +76,7 @@ clear temp;
 backup_path = [pulseq_path() '/Pulseq_Workspace/' pulseq_user '/' seq_id(1:6) '/' seq_id];
 mat_file    = dir(fullfile(backup_path, '*.mat'));
 backup_path = [backup_path '/' mat_file.name];
+checkexists(backup_path, file_qualifier='pulseq backup');
 try
     load(backup_path);
 catch
