@@ -17,14 +17,17 @@ flag_mrf    = 0; % 0: off,  1: simulate sequence via MRF toolbox
 % pulseq_scanner = 'Siemens_Vida_3T_MIITT';
 pulseq_scanner = 'GE_Signa_3T_MIITT';
 
+% select pns sim orientation
+% pns_orientation = 'coronal';
+
 % init system, seq object and load pulseq user information
 pulseq_init();
 
 %% import SPI object for trajectory measurement
 
 % load any backup file containing an SPI object
-% load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251113/251113_0048/backup_251113_0048_workspace.mat')
-load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251113/251113_0049/backup_251113_0049_workspace.mat')
+% load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251116/251116_0114/backup_251116_0114_workspace.mat')
+load('Q:/data/Pulseq/Pulseq_Workspace/mgram/251116/251116_0115/backup_251116_0115_workspace.mat')
 
 %% store the original workspace inside the new workspace
 PULSEQ_SPI = PULSEQ;
@@ -52,6 +55,7 @@ TRAJ.Trec = 150 *1e-3; % [s]
 % analyze phase evolution in a thin slice far from the iso-center
 TRAJ.slice_thickness = 2 *1e-3;  % [m] slice thickness
 TRAJ.slice_offset    = 50 *1e-3; % [m] slice offset
+TRAJ.lim_slew        = 0.5;
 
 % flip angle
 TRAJ.exc_fa = 20 *pi/180;
@@ -68,27 +72,17 @@ if strcmp(TRAJ.method, 'robison')
             loop_traj = loop_xy;
             for loop_av = 1 - ndummy : TRAJ.Nav
 
-                if loop_av<1
-                    temp_trid_shift = 8;
-                else
-                    temp_trid_shift = 0;
-                end
-
                 loop_traj = loop_xy;
-                seq.addBlock(mr.makeLabel('SET', 'TRID', loop_traj+temp_trid_shift));
-                TRAJ_add();
+                GE_TRAJ_add();
 
                 loop_traj = loop_xy + 2;
-                seq.addBlock(mr.makeLabel('SET', 'TRID', loop_traj+temp_trid_shift));
-                TRAJ_add();
+                GE_TRAJ_add();
 
                 loop_traj = loop_xy + 1;
-                seq.addBlock(mr.makeLabel('SET', 'TRID', loop_traj+temp_trid_shift));
-                TRAJ_add();
+                GE_TRAJ_add();
 
                 loop_traj = loop_xy + 3;
-                seq.addBlock(mr.makeLabel('SET', 'TRID', loop_traj+temp_trid_shift));
-                TRAJ_add();
+                GE_TRAJ_add();
                 
             end           
             ndummy = 0;

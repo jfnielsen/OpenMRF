@@ -33,13 +33,7 @@ SPI.adc.phaseOffset           = mod(temp_phase + pi/2, 2*pi); % shift with pi/2:
 clear temp_phase;
 
 %% segment label extension for GE scanners
-if flag_GE==1
-    if loop_NR<1
-        seq.addBlock(mr.makeLabel('SET', 'TRID', 2));
-    else
-        seq.addBlock(mr.makeLabel('SET', 'TRID', 3));
-    end
-end
+
 
 %% LIN label extension for United Imaging scanners
 if flag_UI==1
@@ -53,9 +47,23 @@ if flag_UI==1
 end
 
 %% add sequence blocks
+
+if flag_GE==1
+    seq.addBlock(mr.makeLabel('SET', 'TRID', 2));
+end
+
 seq.addBlock(SPI.rf(temp_loop), SPI.gz);
 seq.addBlock(SPI.gz_reph(loop_kz));
 seq.addBlock(SPI.TE_delay(temp_loop));
+
+if flag_GE==1
+    if loop_NR<1
+        seq.addBlock(mr.makeLabel('SET', 'TRID', 3));
+    else
+        seq.addBlock(mr.makeLabel('SET', 'TRID', 4));
+    end
+end
+
 if loop_NR<1
     seq.addBlock(SPI.gx(SPI.phi_id(temp_loop)), SPI.gy(SPI.phi_id(temp_loop)), SPI.gz_spoil(loop_kz));           % dummy loop 
 else
