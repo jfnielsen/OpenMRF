@@ -30,9 +30,24 @@ if isfield(PULSEQ, 'ADIASL')
     [ T12p_Map, ~, R2_Map ] = mg_map_T12p( Images, tSL, mask );
 end
 
-% vis results
-figure()
-subplot(1,2,1)
-imagesc(T12p_Map, [0 1]); axis image; axis off; colormap(turbo(1000));
-subplot(1,2,2)
-imagesc(R2_Map, [0.8 1]); axis image; axis off; colormap(turbo(1000));
+%% vis results
+figure;
+tiledlayout(1, 2);
+
+nexttile; 
+imagesc(T12p_Map, [0 1]); 
+axis image; axis off; 
+if isfield(PULSEQ, 'T2')
+    title('T2 [s]');
+else
+    title('T1\rho [s]')
+end
+colorbar;
+
+nexttile;
+imagesc(R2_Map, [0.8 1]); 
+axis image; axis off; 
+title('R^2');
+colorbar;
+
+colormap(turbo(1000));

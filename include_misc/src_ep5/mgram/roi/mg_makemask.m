@@ -7,7 +7,8 @@ function [mask] = mg_makemask()
 % 
 % by fxbreuer 19.08.05
 
-fprintf('Please alter image contrast until contrast is black-white.\nPress RETURN to continue ... \n')
+% fprintf('Please alter image contrast until contrast is black-white.\nPress RETURN to continue ... \n')
+title('Please alter image contrast by dragging the mouse until contrast is black-white. Press RETURN to continue.')
 set(gcf,'currentcharacter','d')
 contrastimage(gcf);
 %set(gcf,'selected','on')

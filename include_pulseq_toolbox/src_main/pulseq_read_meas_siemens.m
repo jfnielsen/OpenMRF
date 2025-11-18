@@ -13,7 +13,7 @@ if isempty(study)
     if isempty(study_path)
         study_path = userpath();
     end
-    [study_name, study_path] = uigetfile('*.*', 'All Files (*.*)', study_path );
+    [study_name, study_path] = uigetfile('*.*', 'Select a file', study_path );
     study_path = strrep(study_path, '\', '/');
     study = [study_path study_name];
 else
