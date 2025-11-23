@@ -39,7 +39,7 @@ colorbar;
 nexttile;
 imagesc(Eff_Map, [0.5, 1]); 
 axis image; axis off; 
-title('Fitting efficiency')
+title('Inversion efficiency')
 colorbar;
 
 colormap(turbo(1000));
