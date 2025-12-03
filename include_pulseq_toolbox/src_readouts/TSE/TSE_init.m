@@ -1,4 +1,4 @@
-function [TSE, ktraj_adc, ktraj_full] = TSE_init(TSE, FOV, system)
+function [TSE, ktraj_adc, ktraj_full] = TSE_init(TSE, FOV, system, flag_plot)
 
 % ---------------------------------------------------------
 % ---------- init parameters and pulseq objects -----------
@@ -217,7 +217,7 @@ seq = mr.Sequence(system);
 for loop_TR = 1 : TSE.nex
     TSE_add();
 end
-[ktraj_adc, ktraj_full] = pulseq_get_ktraj(seq, 1);
+[ktraj_adc, ktraj_full] = pulseq_get_ktraj(seq, flag_plot);
 
 end
 
