@@ -56,4 +56,4 @@ colormap(turbo(1000));
 res.T12p_Map = T12p_Map;
 res.Images = Images;
 res.TE = TE;
-save_study_results(study_info, res);
+save_study_results(study_info, res, study_info.study_path);

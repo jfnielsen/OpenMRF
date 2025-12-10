@@ -336,4 +336,4 @@ end
 %% save results
 res.images = images;
 res.match = match;
-save_study_results(study_info, res);
+save_study_results(study_info, res, study_path);

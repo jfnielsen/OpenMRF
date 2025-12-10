@@ -48,4 +48,4 @@ colormap(turbo(1000));
 res.T1_Map = T1_Map;
 res.Images = Images;
 res.TI = TI;
-save_study_results(study_info, res);
+save_study_results(study_info, res, study_info.study_path);
