@@ -60,7 +60,13 @@ if strcmp(FAT.mode, 'on')
     if ~isfield(FAT, 'crush_nTwists_z')
         FAT.crush_nTwists_z = 5.1;   % [] number of 2pi twists in z direction
     end
-    [FAT.gx_crush, FAT.gy_crush, FAT.gz_crush] = CRUSH_x_y_z(FAT.crush_nTwists_x, FAT.crush_nTwists_y, FAT.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, 1/sqrt(3), 1/sqrt(3), system);
+    if ~isfield(FAT, 'crush_lim_grad')
+        FAT.crush_lim_grad = 1/sqrt(3); % reduce crusher gradient amplitude from nominal limit
+    end    
+    if ~isfield(FAT, 'crush_lim_slew')
+        FAT.crush_lim_slew = 1/sqrt(3); % reduce crusher gradient slew rate from nominal limit to avoid stimulation
+    end
+    [FAT.gx_crush, FAT.gy_crush, FAT.gz_crush] = CRUSH_x_y_z(FAT.crush_nTwists_x, FAT.crush_nTwists_y, FAT.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, FAT.crush_lim_grad, FAT.crush_lim_slew, system);
     FAT.tcrush = mr.calcDuration(FAT.gx_crush, FAT.gy_crush, FAT.gz_crush);
 
 end

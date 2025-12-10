@@ -46,7 +46,13 @@ function INV = INV_init(INV, FOV, system)
     if ~isfield(INV, 'crush_nTwists_z')
         INV.crush_nTwists_z = 11.6;   % [] number of 2pi twists in z direction
     end
-    [INV.gx_crush, INV.gy_crush, INV.gz_crush] = CRUSH_x_y_z(INV.crush_nTwists_x, INV.crush_nTwists_y, INV.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, 1/sqrt(3), 1/sqrt(3), system);
+    if ~isfield(INV, 'crush_lim_grad')
+        INV.crush_lim_grad = 1/sqrt(3); % reduce crusher gradient amplitude from nominal limit
+    end    
+    if ~isfield(INV, 'crush_lim_slew')
+        INV.crush_lim_slew = 1/sqrt(3); % reduce crusher gradient slew rate from nominal limit to avoid stimulation
+    end
+    [INV.gx_crush, INV.gy_crush, INV.gz_crush] = CRUSH_x_y_z(INV.crush_nTwists_x, INV.crush_nTwists_y, INV.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, INV.crush_lim_grad, INV.crush_lim_slew, system);
     INV.tcrush = mr.calcDuration(INV.gx_crush, INV.gy_crush, INV.gz_crush);
 
     % recovery delay

@@ -52,6 +52,12 @@ function T2 = T2_init(T2, FOV, system)
     if ~isfield(T2, 'crush_nTwists_z')
         T2.crush_nTwists_z = 11.3;   % [] number of 2pi twists in z direction
     end
+    if ~isfield(T2, 'crush_lim_grad')
+        T2.crush_lim_grad = 1/sqrt(3); % reduce crusher gradient amplitude from nominal limit
+    end    
+    if ~isfield(T2, 'crush_lim_slew')
+        T2.crush_lim_slew = 1/sqrt(3); % reduce crusher gradient slew rate from nominal limit to avoid stimulation
+    end
     
     T2.n_prep = numel(T2.prep_times);
     
@@ -60,7 +66,7 @@ function T2 = T2_init(T2, FOV, system)
     [T2.T2_objs.rf_90_td, T2.T2_objs.rf_90_tu] = T2_get_objs_EXC(T2, system);    
     T2.T2_objs.rf_comp_pos                     = T2_get_objs_COMP(system, T2.rfc_dur, T2.ref_phase + pi/2);
     T2.T2_objs.rf_comp_neg                     = T2_get_objs_COMP(system, T2.rfc_dur, T2.ref_phase - pi/2);    
-    [T2.T2_objs.gx_crush, T2.T2_objs.gy_crush, T2.T2_objs.gz_crush] = CRUSH_x_y_z(T2.crush_nTwists_x, T2.crush_nTwists_y, T2.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, 1/sqrt(3), 1/sqrt(3), system);
+    [T2.T2_objs.gx_crush, T2.T2_objs.gy_crush, T2.T2_objs.gz_crush] = CRUSH_x_y_z(T2.crush_nTwists_x, T2.crush_nTwists_y, T2.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, T2.crush_lim_grad, T2.crush_lim_slew, system);
     
     for j = 1:T2.n_prep
         temp_t_inter  = round( (T2.prep_times(j)-2*T2.rfc_dur) / 4 / system.gradRasterTime) * system.gradRasterTime;
