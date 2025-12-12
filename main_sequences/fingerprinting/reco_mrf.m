@@ -2,8 +2,8 @@
 clear
 
 study_path      = 'Q:/data/Pulseq/Rawdata/tomgr/Prisma/250912_OpenMRF_NIST/';
-study_name_mrf  = 'meas_MID00536_FID166993_pulseq_mrf_rep1.dat';
-% study_name_traj = 'meas_MID00035_FID92121_250725_1452_tomgr_traj_250725_1421_cor.dat';
+study_name_mrf  = 'meas_MID00571_FID167028_pulseq_mrf_rep1.dat';
+study_name_traj = 'meas_MID00025_FID167054_pulseq_traj_mrf.dat';
 
 % load twix_object, study info and pulseq meta data
 [twix_obj, study_info, PULSEQ] = pulseq_read_meas_siemens([study_path study_name_mrf]);
@@ -145,6 +145,7 @@ params_LR.alpha            = 0.01;
 params_LR.stopThresh       = 0;
 params_LR.updateFreq       = 0;
 
+tic
 % start reco & matching
 [match, images] = mg_miitt_mrf_reco( DATA, ...              % [NCoils x NR x Nadc] mrf data
                                      ktraj, ...             % [2 x Nunique x Nadc] k-space trajectory
@@ -156,6 +157,7 @@ params_LR.updateFreq       = 0;
                                      look_up_names, ...     % {1 x Nparams} names of look-up table colums
                                      params_reco, ...       % parameters for basic recosntruction
                                      params_LR );           % parameters for low rank reconstruction
+toc
 
 %% vis T1 T2 match results
 t1lims = [0 2000] *1e-3;
