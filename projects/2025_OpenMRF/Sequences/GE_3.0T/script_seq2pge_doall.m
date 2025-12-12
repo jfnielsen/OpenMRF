@@ -25,6 +25,9 @@ slew_max = 20;           % Gauss/cm/ms
 coil = 'xrm';            % MR750. See pge2.opts()
 sysGE = pge2.opts(psd_rf_wait, psd_grd_wait, b1_max, g_max, slew_max, coil);
 
+% PNS channel/direction weights
+PNSwt = 0*[1 1 1];   
+
 % -------------------------------------------------------------------------
 % Convert .seq files to .pge format for the pge2 interpreter
 % -------------------------------------------------------------------------
@@ -36,7 +39,8 @@ D = dir([seqFilePath '*.seq']);
 
 % Initialize output .tar file
 system(sprintf('rm -f %s', tarFileName));
-system(sprintf('tar cf %s main.m', tarFileName));
+system('git rev-parse HEAD > commitID.txt');
+system(sprintf('tar cf %s commitID.txt setup_4_seq2pge.m script_seq2pge_doall.m', tarFileName));
 
 for ii = 1:length(D)
     fn = replace(D(ii).name, '.seq', '');
@@ -48,7 +52,6 @@ for ii = 1:length(D)
 
     % Check PNS and b1/gradients against scanner limits,
     % and extract some sequence parameters.
-    PNSwt = 0*[1 1 1];   % PNS channel/direction weights
     params = pge2.check(ceq, sysGE, 'wt', PNSwt);
     %params.smax = 1;   % for simulating in WTools
 
