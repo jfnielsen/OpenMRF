@@ -145,9 +145,9 @@ seq.addBlock(TRAJ.d1);
 
 if loop_av > 0
     if strcmp(temp_g_read.channel, 'x')
-        [seq, TRID] = GE_add_TRID(seq, TRID, 'read_x', flag_GE);
+        [seq, TRID] = GE_add_TRID(seq, TRID, ['read_x_' num2str(loop_NR)], flag_GE);
     elseif strcmp(temp_g_read.channel, 'y')
-        [seq, TRID] = GE_add_TRID(seq, TRID, 'read_y', flag_GE);
+        [seq, TRID] = GE_add_TRID(seq, TRID, ['read_y_' num2str(loop_NR)], flag_GE);
     end
     seq.addBlock(temp_g_read, temp_adc);
 else

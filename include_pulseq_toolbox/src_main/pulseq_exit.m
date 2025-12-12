@@ -168,6 +168,7 @@ if flag_backup>0
         'TRIG_IN';
         'TRIG_OUT';
         'T2';
+        'TRID';
         'UTE';
         'WASABI';
         'ktraj_reco';
