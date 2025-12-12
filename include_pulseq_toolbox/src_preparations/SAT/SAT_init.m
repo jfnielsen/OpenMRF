@@ -60,7 +60,13 @@ if strcmp(SAT.mode, 'on')
     if ~isfield(SAT, 'crush_nTwists_z')
         SAT.crush_nTwists_z = 13.7;   % [] number of 2pi twists in z direction
     end
-    [SAT.gx_crush, SAT.gy_crush, SAT.gz_crush] = CRUSH_x_y_z(SAT.crush_nTwists_x, SAT.crush_nTwists_y, SAT.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, 1/sqrt(3), 1/sqrt(3), system);
+    if ~isfield(SAT, 'crush_lim_grad')
+        SAT.crush_lim_grad = 1/sqrt(3); % reduce crusher gradient amplitude from nominal limit
+    end    
+    if ~isfield(SAT, 'crush_lim_slew')
+        SAT.crush_lim_slew = 1/sqrt(3); % reduce crusher gradient slew rate from nominal limit to avoid stimulation
+    end
+    [SAT.gx_crush, SAT.gy_crush, SAT.gz_crush] = CRUSH_x_y_z(SAT.crush_nTwists_x, SAT.crush_nTwists_y, SAT.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, SAT.crush_lim_grad, SAT.crush_lim_slew, system);
 
     % recovery delay
     if isfield(SAT, 'sat_rec_time')

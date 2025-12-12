@@ -110,6 +110,12 @@ function SL = SL_init(SL, FOV, system)
     if ~isfield(SL, 'crush_nTwists_z')
         SL.crush_nTwists_z = 11.3;   % [] number of 2pi twists in z direction
     end
+    if ~isfield(SL, 'crush_lim_grad')
+        SL.crush_lim_grad = 1/sqrt(3); % reduce crusher gradient amplitude from nominal limit
+    end    
+    if ~isfield(SL, 'crush_lim_slew')
+        SL.crush_lim_slew = 1/sqrt(3); % reduce crusher gradient slew rate from nominal limit to avoid stimulation
+    end
 
     %% clear unnecessary parameters
     if strcmp(SL.exc_mode, 'adiabatic_AHP')
@@ -213,7 +219,7 @@ function SL = SL_init(SL, FOV, system)
         [SL.SL_objs(j).EXC1, SL.SL_objs(j).EXC2]                                 = SL_get_objs_EXC(SL, system, j);
         [SL.SL_objs(j).RFC1, SL.SL_objs(j).RFC2]                                 = SL_get_objs_RFC(SL, system, j);
         [SL.SL_objs(j).SL1, SL.SL_objs(j).SL2, SL.SL_objs(j).SL3]                = SL_get_objs_SL(SL, system, j);
-        [SL.SL_objs(j).gx_crush, SL.SL_objs(j).gy_crush, SL.SL_objs(j).gz_crush] = CRUSH_x_y_z(SL.crush_nTwists_x, SL.crush_nTwists_y, SL.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, 1/sqrt(3), 1/sqrt(3), system);
+        [SL.SL_objs(j).gx_crush, SL.SL_objs(j).gy_crush, SL.SL_objs(j).gz_crush] = CRUSH_x_y_z(SL.crush_nTwists_x, SL.crush_nTwists_y, SL.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, SL.crush_lim_grad, SL.crush_lim_slew, system);
         SL.SL_objs(j).d1                                                         = mr.makeDelay(system.gradRasterTime);
         SL.SL_objs(j).d2                                                         = mr.makeDelay(system.gradRasterTime);
         SL.SL_objs(j).duration                                                   = SL_get_duration(SL.SL_objs(j));

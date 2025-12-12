@@ -77,7 +77,7 @@ if plot_flag > 0
     end
     df0_Map_ = df0_Map;
     df0_Map_(mask_fit==0) = -Inf;
-    mycmp1 = mg_blue_red(1024);
+    mycmp1 = get_cmp('blue_red', 1024);
     mycmp1(1,:) = 0;
     mycmp2 = jet(1024);
     mycmp2(1,:) = 0;

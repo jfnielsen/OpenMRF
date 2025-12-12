@@ -6,8 +6,12 @@ function [GRE, ktraj_adc, ktraj_full] = GRE_init(GRE, FOV, system)
 % ---------------------------------------------------------
 
 %% limit max grad strength and slew rate
-GRE.max_grad   = 0.95;
-GRE.max_slew   = 0.75;
+if ~isfield(GRE, 'max_grad')
+    GRE.max_grad   = 0.95;
+end
+if ~isfield(GRE, 'max_slew')
+    GRE.max_slew   = 0.75;
+end
 system.maxGrad = system.maxGrad * GRE.max_grad;
 system.maxSlew = system.maxSlew * GRE.max_slew;
 

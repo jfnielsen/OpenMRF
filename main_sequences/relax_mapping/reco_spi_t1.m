@@ -21,6 +21,8 @@ TI = PULSEQ.INV.inv_rec_time;
 [T1_Map, M0_Map, Eff_Map, R2_Map] = mg_map_T1(real(Images), TI, mask);
 
 %% vis results
+t1cmp  = get_cmp('T1', 1000, 1);
+
 figure;
 tiledlayout(1, 3)
 
@@ -28,6 +30,7 @@ nexttile;
 imagesc(T1_Map, [0 2]); 
 axis image; axis off; 
 title('T1 [s]');
+colormap(t1cmp);
 colorbar;
 
 nexttile;
@@ -48,4 +51,4 @@ colormap(turbo(1000));
 res.T1_Map = T1_Map;
 res.Images = Images;
 res.TI = TI;
-save_study_results(study_info, res);
+save_study_results(study_info, res, study_info.study_path);

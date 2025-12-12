@@ -59,6 +59,12 @@ function MLEV = MLEV_init(MLEV, FOV, system)
     if ~isfield(MLEV, 'crush_nTwists_z')
         MLEV.crush_nTwists_z = 11.3;   % [] number of 2pi twists in z direction
     end
+    if ~isfield(MLEV, 'crush_lim_grad')
+        MLEV.crush_lim_grad = 1/sqrt(3); % reduce crusher gradient amplitude from nominal limit
+    end    
+    if ~isfield(MLEV, 'crush_lim_slew')
+        MLEV.crush_lim_slew = 1/sqrt(3); % reduce crusher gradient slew rate from nominal limit to avoid stimulation
+    end
     
     MLEV.n_prep         = numel(MLEV.n_mlev);
     MLEV.n_composite    = MLEV.n_mlev * 4;
@@ -76,7 +82,7 @@ function MLEV = MLEV_init(MLEV, FOV, system)
     [MLEV.MLEV_objs.rf_90_td, MLEV.MLEV_objs.rf_90_tu]                          = MLEV_get_objs_EXC(MLEV, system);
     MLEV.MLEV_objs.rf_comp_pos                                                  = MLEV_get_objs_COMP(system, MLEV.tau_composite, MLEV.ref_phase + pi/2);
     MLEV.MLEV_objs.rf_comp_neg                                                  = MLEV_get_objs_COMP(system, MLEV.tau_composite, MLEV.ref_phase - pi/2);
-    [MLEV.MLEV_objs.gx_crush, MLEV.MLEV_objs.gy_crush, MLEV.MLEV_objs.gz_crush] = CRUSH_x_y_z(MLEV.crush_nTwists_x, MLEV.crush_nTwists_y, MLEV.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, 1/sqrt(3), 1/sqrt(3), system);
+    [MLEV.MLEV_objs.gx_crush, MLEV.MLEV_objs.gy_crush, MLEV.MLEV_objs.gz_crush] = CRUSH_x_y_z(MLEV.crush_nTwists_x, MLEV.crush_nTwists_y, MLEV.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, MLEV.crush_lim_grad, MLEV.crush_lim_slew, system);
     [MLEV.MLEV_objs.cycling_list]                                               = MLEV_get_cycling_list(max(MLEV.n_mlev));
     
     % calc total prep durations

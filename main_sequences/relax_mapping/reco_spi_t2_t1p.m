@@ -31,6 +31,8 @@ if isfield(PULSEQ, 'ADIASL')
 end
 
 %% vis results
+t2cmp  = get_cmp('T2', 1000, 1);
+
 figure;
 tiledlayout(1, 2);
 
@@ -42,6 +44,7 @@ if isfield(PULSEQ, 'T2')
 else
     title('T1\rho [s]')
 end
+colormap(t2cmp);
 colorbar;
 
 nexttile;
@@ -56,4 +59,4 @@ colormap(turbo(1000));
 res.T12p_Map = T12p_Map;
 res.Images = Images;
 res.TE = TE;
-save_study_results(study_info, res);
+save_study_results(study_info, res, study_info.study_path);

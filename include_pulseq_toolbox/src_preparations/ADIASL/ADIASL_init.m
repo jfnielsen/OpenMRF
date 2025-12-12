@@ -49,7 +49,13 @@ if strcmp(ADIASL.mode, 'on')
     if ~isfield(ADIASL, 'crush_nTwists_z')
         ADIASL.crush_nTwists_z = 11.3;   % [] number of 2pi twists in z direction
     end
-    [ADIASL.gx_crush, ADIASL.gy_crush, ADIASL.gz_crush] = CRUSH_x_y_z(ADIASL.crush_nTwists_x, ADIASL.crush_nTwists_y, ADIASL.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, 1/sqrt(3), 1/sqrt(3), system);
+    if ~isfield(ADIASL, 'crush_lim_grad')
+        ADIASL.crush_lim_grad = 1/sqrt(3); % reduce crusher gradient amplitude from nominal limit
+    end    
+    if ~isfield(ADIASL, 'crush_lim_slew')
+        ADIASL.crush_lim_slew = 1/sqrt(3); % reduce crusher gradient slew rate from nominal limit to avoid stimulation
+    end
+    [ADIASL.gx_crush, ADIASL.gy_crush, ADIASL.gz_crush] = CRUSH_x_y_z(ADIASL.crush_nTwists_x, ADIASL.crush_nTwists_y, ADIASL.crush_nTwists_z, FOV.dx, FOV.dy, FOV.dz, ADIASL.crush_lim_grad, ADIASL.crush_lim_slew, system);
     ADIASL.tcrush = mr.calcDuration(ADIASL.gx_crush, ADIASL.gy_crush, ADIASL.gz_crush);
     
 end
