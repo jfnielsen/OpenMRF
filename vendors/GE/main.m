@@ -1,58 +1,72 @@
 % Create .pge files and put them in OpenMRF.tar
+      
+% -------------------------------------------------------------------------
+% EDIT THIS SECTION AS NEEDED 
+% -------------------------------------------------------------------------
+% Local path containing all the .seq files you wish to convert to .pge
+seqFilePath = '~/Downloads/OpenMRF/GE_OpenMRF_251117_maybe_final/';
 
-if ~exist('mr.Sequence');
-    setup;
-end
+% Output file name
+tarFileName = 'OpenMRF_GE.tar'; 
 
-tarfn = 'OpenMRF.tar';  % put files here
+% Path on the scanner where .pge files will reside,
+% and .entry file number corresponding to the first .pge file.
+% These settings are used to create the .entry files, that you must copy
+% to /srv/nfs/psd/usr/psd/pulseq/v7/ on the scanner host computer.
+CV1 = 721;    
+pgeFilePath = '/srv/nfs/psd/usr/psd/pulseq/v7/sequences/OpenMRF';
 
-seqdir = '~/dropbox/Pulseq/OpenMRF/';
-seqdir = '~/Downloads/OpenMRF/';
-seqdir = '~/Downloads/OpenMRF/GE_OpenMRF_251117_maybe_final/';
-D = dir([seqdir '*.seq']);
+% Scanner hardware settings
+psd_rf_wait = 100e-6;    % RF-gradient delay, scanner specific (s)
+psd_grd_wait = 100e-6;   % ADC-gradient delay, scanner specific (s)
+b1_max = 0.25;           % Gauss
+g_max = 5;               % Gauss/cm
+slew_max = 20;           % Gauss/cm/ms
+coil = 'xrm';            % MR750. See pge2.opts()
+sysGE = pge2.opts(psd_rf_wait, psd_grd_wait, b1_max, g_max, slew_max, coil);
 
-CV1 = 721;   % for creating .entry file name
+% -------------------------------------------------------------------------
+% Convert .seq files to .pge format for the pge2 interpreter
+% -------------------------------------------------------------------------
 
-system(sprintf('rm -f %s', tarfn));
-system(sprintf('tar cf %s main.m', tarfn));
+seqFilePath = pge2.utils.ensuretrailingslash(seqFilePath);
+seqFilePath = pge2.utils.normalizepath(seqFilePath);
+
+D = dir([seqFilePath '*.seq']);
+
+% Initialize output .tar file
+system(sprintf('rm -f %s', tarFileName));
+system(sprintf('tar cf %s main.m', tarFileName));
 
 for ii = 1:length(D)
     fn = replace(D(ii).name, '.seq', '');
 
-    ceq = seq2ceq([seqdir fn '.seq'], 'usesRotationEvents', false);
+    if contains(fn, 'wasabi'), continue, end
 
-    % scanner parameters/limits
-    psd_rf_wait = 100e-6;  % RF-gradient delay, scanner specific (s)
-    psd_grd_wait = 100e-6; % ADC-gradient delay, scanner specific (s)
-    b1_max = 0.25;         % Gauss
-    g_max = 5;             % Gauss/cm
-    slew_max = 20;         % Gauss/cm/ms
-    coil = 'xrm';          % MR750. See pge2.opts()
-    sysGE = pge2.opts(psd_rf_wait, psd_grd_wait, b1_max, g_max, slew_max, coil);
+    % Convert to Ceq sequence representation
+    ceq = seq2ceq([seqFilePath fn '.seq'], 'usesRotationEvents', false);
 
-    % Check PNS and b1/gradient against scanner limits,
-    % and extract some sequence parameters that we will pass to writeceq()
-    pars = pge2.check(ceq, sysGE);
+    % Check PNS and b1/gradients against scanner limits,
+    % and extract some sequence parameters.
+    PNSwt = 0*[1 1 1];   % PNS channel/direction weights
+    params = pge2.check(ceq, sysGE, 'wt', PNSwt);
+    %params.smax = 1;   % for simulating in WTools
 
-    % Plot the beginning of the sequence
-    %S = pge2.plot(ceq, sysGE, 'timeRange', [0 0.02], 'rotate', false); 
-    %pause(1);
-
-    % Write ceq object to file.
-    % pislquant is the number of ADC events used to set Rx gains in Auto Prescan
-    writeceq(ceq, [fn '.pge'], 'pislquant', 2);
-
-    % write entry file
-    pge2.writeentryfile(CV1+ii-1, fn);
-
-    % add files to tar file
-    system(sprintf('tar --append -f %s pge%d.entry %s', tarfn, CV1+ii-1, [fn '.pge']));
-
-    % After simulating in WTools/VM or scanning, grab the xml files 
-    % and compare with the seq object:
+    % Check accuracy of the ceq sequence representation against the .seq file
     seq = mr.Sequence();
-    seq.read([seqdir fn '.seq']);
+    seq.read([seqFilePath fn '.seq']);
     warning('OFF', 'mr:restoreShape');  % turn off Pulseq warning for spirals
-    xmlPath = '~/transfer/xml/';
-    pge2.validate(ceq, sysGE, seq, [], 'row', [], 'plot', false);
+    xmlPath = []; % if nonempty, compare against WTools/Pulse Studio output
+    pge2.validate(ceq, sysGE, seq, xmlPath, 'row', [], 'plot', false);
+
+    % Write .pge file
+    pislquant = 1;  % num ADC events for setting Rx gain in Auto Prescan
+    pge2.writeceq(ceq, [fn '.pge'], 'pislquant', pislquant, 'params', params);
+
+    % Write .entry file
+    entryFileNum = CV1 + ii - 1;
+    pge2.writeentryfile(entryFileNum, fn);
+
+    % Add files to tar file
+    system(sprintf('tar --append -f %s pge%d.entry %s', tarFileName, entryFileNum, [fn '.pge']));
 end
