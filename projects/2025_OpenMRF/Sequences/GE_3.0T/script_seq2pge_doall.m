@@ -1,4 +1,4 @@
-% Create .pge files and put them in OpenMRF.tar
+% Create .pge files and put them in OpenMRF_GE.tar
       
 % -------------------------------------------------------------------------
 % EDIT THIS SECTION AS NEEDED 
@@ -9,10 +9,10 @@ seqFilePath = '~/Downloads/OpenMRF/GE_OpenMRF_251117_maybe_final/';
 % Output file name
 tarFileName = 'OpenMRF_GE.tar'; 
 
-% Path on the scanner where .pge files will reside,
-% and .entry file number corresponding to the first .pge file.
-% These settings are used to create the .entry files, that you must copy
-% to /srv/nfs/psd/usr/psd/pulseq/v7/ on the scanner host computer.
+% Path on the scanner where the .pge files will reside, and the .entry
+% file index corresponding to the first .pge file.
+% These settings are used to generate the .entry files, which must be
+% copied to /srv/nfs/psd/usr/psd/pulseq/v7/ on the scanner host computer.
 CV1 = 721;    
 pgeFilePath = '/srv/nfs/psd/usr/psd/pulseq/v7/sequences/OpenMRF';
 
@@ -45,8 +45,6 @@ system(sprintf('tar cf %s commitID.txt setup_4_seq2pge.m script_seq2pge_doall.m'
 for ii = 1:length(D)
     fn = replace(D(ii).name, '.seq', '');
 
-    if contains(fn, 'wasabi'), continue, end
-
     % Convert to Ceq sequence representation
     ceq = seq2ceq([seqFilePath fn '.seq'], 'usesRotationEvents', false);
 
@@ -68,7 +66,7 @@ for ii = 1:length(D)
 
     % Write .entry file
     entryFileNum = CV1 + ii - 1;
-    pge2.writeentryfile(entryFileNum, fn);
+    pge2.writeentryfile(entryFileNum, fn, 'path', pgeFilePath);
 
     % Add files to tar file
     system(sprintf('tar --append -f %s pge%d.entry %s', tarFileName, entryFileNum, [fn '.pge']));
