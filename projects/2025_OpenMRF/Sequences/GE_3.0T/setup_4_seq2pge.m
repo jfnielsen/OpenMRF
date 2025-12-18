@@ -7,4 +7,3 @@ system('git clone --branch main git@github.com:HarmonizedMRI/PulCeq.git');
 addpath PulCeq/matlab
 addpath PulCeq/matlab/DataHash
 
-curdir = pwd; cd ~/github/mirt; setup; cd(curdir);
