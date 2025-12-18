@@ -3,6 +3,9 @@
 % -------------------------------------------------------------------------
 % EDIT THIS SECTION AS NEEDED 
 % -------------------------------------------------------------------------
+
+isTest = true;  % if true, turn off PNS and max slew checks (for WTools)
+
 % Local path containing all the .seq files you wish to convert to .pge
 seqFilePath = '~/Downloads/OpenMRF/GE_OpenMRF_251117_maybe_final/';
 
@@ -26,11 +29,13 @@ coil = 'xrm';            % MR750. See pge2.opts()
 sysGE = pge2.opts(psd_rf_wait, psd_grd_wait, b1_max, g_max, slew_max, coil);
 
 % PNS channel/direction weights
-PNSwt = 0*[1 1 1];   
+PNSwt = (1-isTest)*[1 1 1];   
 
 % -------------------------------------------------------------------------
 % Convert .seq files to .pge format for the pge2 interpreter
 % -------------------------------------------------------------------------
+
+pge2.utils.removeFiles('*.pge *.entry');
 
 seqFilePath = pge2.utils.ensuretrailingslash(seqFilePath);
 seqFilePath = pge2.utils.normalizepath(seqFilePath);
@@ -41,6 +46,7 @@ D = dir([seqFilePath '*.seq']);
 system(sprintf('rm -f %s', tarFileName));
 system('git rev-parse HEAD > commitID.txt');
 system(sprintf('tar cf %s commitID.txt setup_4_seq2pge.m script_seq2pge_doall.m', tarFileName));
+pge2.utils.removeFiles('commitID.txt');
 
 for ii = 1:length(D)
     fn = replace(D(ii).name, '.seq', '');
@@ -51,25 +57,35 @@ for ii = 1:length(D)
     % Check PNS and b1/gradients against scanner limits,
     % and extract some sequence parameters.
     params = pge2.check(ceq, sysGE, 'wt', PNSwt);
-    %params.smax = 1;   % for simulating in WTools
 
     % Check accuracy of the ceq sequence representation against the .seq file
-    seq = mr.Sequence();
+    sys = mr.opts('maxGrad', sysGE.g_max*10, 'gradUnit','mT/m', ...
+              'maxSlew', sysGE.slew_max*10, 'slewUnit', 'T/m/s', ...
+              'rfDeadTime', sysGE.rf_dead_time, ...
+              'rfRingdownTime', sysGE.rf_ringdown_time, ...
+              'adcDeadTime', 10e-6, ...
+              'adcRasterTime', sysGE.adc_raster_time, ...
+              'rfRasterTime', sysGE.RF_UPDATE_TIME, ...
+              'gradRasterTime', sysGE.GRAD_UPDATE_TIME, ...
+              'blockDurationRaster', sysGE.GRAD_UPDATE_TIME);
+    seq = mr.Sequence(sys);
     seq.read([seqFilePath fn '.seq']);
-    warning('OFF', 'mr:restoreShape');  % turn off Pulseq warning for spirals
     xmlPath = []; % if nonempty, compare against WTools/Pulse Studio output
     pge2.validate(ceq, sysGE, seq, xmlPath, 'row', [], 'plot', false);
 
     % Write .pge file
-    pislquant = 10;  % num ADC events for setting Rx gain in Auto Prescan
-    pge2.writeceq(ceq, [fn '.pge'], 'pislquant', pislquant, 'params', params);
+    pislquant = 1;  % num ADC events for setting Rx gain in Auto Prescan
+    pge2.writeceq(ceq, [fn '.pge'], 'pislquant', pislquant, 'params', ...
+        pge2.utils.setfields(params, 'smax', (1-isTest) * params.smax));
 
     % Write .entry file
     entryFileNum = CV1 + ii - 1;
     pge2.writeentryfile(entryFileNum, fn, 'path', pgeFilePath);
 
     % Add files to tar file
-    system(sprintf('tar --append -f %s pge%d.entry %s', tarFileName, entryFileNum, [fn '.pge']));
+    system(sprintf('tar --remove-files --append -f %s pge%d.entry %s', tarFileName, entryFileNum, [fn '.pge']));
 
-    fprintf('%s%s', repmat('\n', 1, 3), repmat('-', 1, 79));
+    fprintf('\n\n\n%s\n', repmat('-', 1, 79));
 end
+
+pge2.utils.removeFiles('*.pge *.entry');
