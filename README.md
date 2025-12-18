@@ -28,4 +28,5 @@ OpenMRF is a modular and vendor-neutral framework for Magnetic Resonance Fingerp
 
 This repository includes third-party software distributed under their respective licenses. Please consult the [NOTICE](./NOTICE) file before use. Not all code is MIT-licensed. Users intending commercial use must review the [NOTICE](./NOTICE) file and seek appropriate permissions from the original authors.
 
+
 _Maximilian Gram: 13.11.2025_
