@@ -7,7 +7,7 @@
 seqFilePath = '~/Downloads/OpenMRF/GE_OpenMRF_251117_maybe_final/';
 
 % Output file name
-tarFileName = 'OpenMRF_GE.tar'; 
+tarFileName= 'OpenMRF-GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
 
 % Path on the scanner where the .pge files will reside, and the .entry
 % file index corresponding to the first .pge file.
@@ -61,7 +61,7 @@ for ii = 1:length(D)
     pge2.validate(ceq, sysGE, seq, xmlPath, 'row', [], 'plot', false);
 
     % Write .pge file
-    pislquant = 1;  % num ADC events for setting Rx gain in Auto Prescan
+    pislquant = 10;  % num ADC events for setting Rx gain in Auto Prescan
     pge2.writeceq(ceq, [fn '.pge'], 'pislquant', pislquant, 'params', params);
 
     % Write .entry file
@@ -70,4 +70,6 @@ for ii = 1:length(D)
 
     % Add files to tar file
     system(sprintf('tar --append -f %s pge%d.entry %s', tarFileName, entryFileNum, [fn '.pge']));
+
+    fprintf('%s%s', repmat('\n', 1, 3), repmat('-', 1, 79));
 end
