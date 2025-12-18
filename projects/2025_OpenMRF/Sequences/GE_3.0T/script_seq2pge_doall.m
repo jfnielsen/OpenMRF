@@ -35,7 +35,7 @@ PNSwt = (1-isTest)*[1 1 1];
 % Convert .seq files to .pge format for the pge2 interpreter
 % -------------------------------------------------------------------------
 
-pge2.utils.removeFiles('*.pge *.entry');
+%pge2.utils.removeFiles('*.pge *.entry');
 
 seqFilePath = pge2.utils.ensuretrailingslash(seqFilePath);
 seqFilePath = pge2.utils.normalizepath(seqFilePath);
@@ -43,7 +43,6 @@ seqFilePath = pge2.utils.normalizepath(seqFilePath);
 D = dir([seqFilePath '*.seq']);
 
 % Initialize output .tar file
-system(sprintf('rm -f %s', tarFileName));
 system('git rev-parse HEAD > commitID.txt');
 system(sprintf('tar cf %s commitID.txt setup_4_seq2pge.m script_seq2pge_doall.m', tarFileName));
 pge2.utils.removeFiles('commitID.txt');
@@ -88,4 +87,3 @@ for ii = 1:length(D)
     fprintf('\n\n\n%s\n', repmat('-', 1, 79));
 end
 
-pge2.utils.removeFiles('*.pge *.entry');
