@@ -4,7 +4,7 @@
 % EDIT THIS SECTION AS NEEDED 
 % -------------------------------------------------------------------------
 
-isTest = true;  % if true, turn off PNS and max slew checks (for WTools)
+isTest = false;  % if true, turn off PNS and max slew checks (for WTools)
 
 % Local path containing all the .seq files you wish to convert to .pge
 seqFilePath = '~/Downloads/OpenMRF/GE_OpenMRF_251117_maybe_final/';
