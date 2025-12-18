@@ -194,8 +194,16 @@ if flag_backup>0
                      [num2str(PULSEQ.duration,'%.3f') 's,  ' num2str(PULSEQ.duration/60,'%.1f') 'min']}, ...
                     [backup_path '/md5_' PULSEQ.md5_hash '.txt']);
         
-        % send .seq file to hydra
+        % copy .seq file to Seq_Export folder
         if (flag_backup>1)
+            if ~exist([pulseq_path '/Seq_Export/' pulseq_user], 'dir')
+               mkdir([pulseq_path '/Seq_Export/' pulseq_user]);
+            end
+            copyfile( external_path, [pulseq_path '/Seq_Export/' pulseq_user '/' seq_name '.seq'] );
+        end
+        
+        % send .seq file to hydra -> only for users from EP5 lab
+        if (flag_backup>2)
             pulseq_scp_hydra(pulseq_user, external_path);
         end
 
