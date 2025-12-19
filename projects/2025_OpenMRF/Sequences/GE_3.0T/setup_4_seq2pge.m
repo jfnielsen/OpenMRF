@@ -8,3 +8,6 @@ system('git clone --branch main git@github.com:HarmonizedMRI/PulCeq.git');
 addpath PulCeq/matlab
 addpath PulCeq/matlab/DataHash
 
+% GErecon function for loading ScanArchive files
+addpath ~/Programs/orchestra-sdk-2.1-1.matlab/
+
