@@ -16,7 +16,7 @@ tarFileName= 'OpenMRF-GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar'
 % file index corresponding to the first .pge file.
 % These settings are used to generate the .entry files, which must be
 % copied to /srv/nfs/psd/usr/psd/pulseq/v7/ on the scanner host computer.
-CV1 = 721;    
+CV1 = 721;               % any non-negative integer
 pgeFilePath = '/srv/nfs/psd/usr/psd/pulseq/v7/sequences/OpenMRF';
 
 % Scanner hardware settings
@@ -34,8 +34,6 @@ PNSwt = (1-isTest)*[1 1 1];
 % -------------------------------------------------------------------------
 % Convert .seq files to .pge format for the pge2 interpreter
 % -------------------------------------------------------------------------
-
-%pge2.utils.removeFiles('*.pge *.entry');
 
 seqFilePath = pge2.utils.ensuretrailingslash(seqFilePath);
 seqFilePath = pge2.utils.normalizepath(seqFilePath);
