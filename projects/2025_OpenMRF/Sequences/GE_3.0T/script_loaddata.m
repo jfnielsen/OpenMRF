@@ -1,3 +1,16 @@
+p = pge2.utils.normalizepath('/home/jon/transfer/Exam8521');
+
+% pge724.entry, 251116_0308_mgram_mrf_yun
+d = pge2.utils.loaddata([p 'Series4/ScanArchive_7347633TMRFIX_20260212_162040809.h5']);
+save -v7.3 d724.mat d
+
+return
+
+% pge722.entry, 251116_0307_mgram_wasabi
+d = pge2.utils.loaddata([p 'Series3/ScanArchive_7347633TMRFIX_20260212_154428315.h5']);
+save -v7.3 d722.mat d
+
+return
 
 p = pge2.utils.normalizepath('/home/jon/dropbox/Shared/Pulseq/OpenMRF/20260212/Exam8521');
 
