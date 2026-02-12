@@ -1,5 +1,6 @@
 
-p = pge2.utils.normalizepath('/home/jon/dropbox/Shared/Pulseq/OpenMRF/20260212/Exam8521');
+% p = pge2.utils.normalizepath('/home/jon/dropbox/Shared/Pulseq/OpenMRF/20260212/Exam8521');
+p = pge2.utils.normalizepath('/home/jon/transfer/Exam8521');
 
 % pge722.entry, wasabi
 S = [3 7 8 13];  % series numbers
@@ -12,8 +13,6 @@ for s = S
         pause(2);
     end
 end
-
-return
 
 % pge724.entry, mrf_yun
 S = [4 9];  % series numbers
