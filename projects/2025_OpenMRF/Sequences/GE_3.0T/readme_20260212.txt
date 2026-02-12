@@ -1,0 +1,61 @@
+
+Feb 12, 2026 at U of Michigan fMRI lab
+With Max, Tom, Sydney, Jon
+
+GE UHP
+GE 48ch head array
+Do wasabi, then check
+
+721 
+  Rx S10 to I10
+  APS: R1/R2 = 8/13; TG = 98
+
+722
+  Series 3
+  copied and pasted 721 Rx
+  MPS, then leave
+  scanned (Series 3)
+  max real signal ~ 7000
+
+  repeat once
+
+724
+  Series 4
+  kept R1/R2 = 8/13
+  TG was automatically set to 108
+  max real signal 3195
+  repeat 5x, but discard 3rd one (didn't wait long enough)
+     -- waited ~10s between scans
+
+726
+  Series 5
+  kept R1/R2 = 8/13
+  TG was automatically set to 108
+  repeat 5x
+
+728
+  Series 6
+  kept R1/R2 = 8/13
+  TG was automatically set to 108
+  repeat 5x
+
+******** Redo with different TG *******
+722
+  Series 7 wasabi TG 98
+  Series 8 wasabi TG 108
+
+724
+  Series 9 mrf_yun TG 98
+  manually set TG = 98 in MPS
+
+726
+  Series 10 cmrf_t1_t2 TG 98
+  manually set TG = 98 in MPS
+
+728
+  Series 11 cmrf_t1_t2_TG_t1p_300Hz TG 98
+
+Series 12 Multislice axial loc scan
+
+Series 13: 722, double oblique
+
