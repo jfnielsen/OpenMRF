@@ -10,7 +10,7 @@ Do wasabi, then check
   Rx S10 to I10
   APS: R1/R2 = 8/13; TG = 98
 
-722
+722 wasabi
   Series 3
   copied and pasted 721 Rx
   MPS, then leave
@@ -19,7 +19,7 @@ Do wasabi, then check
 
   repeat once
 
-724
+724 mrf_yun
   Series 4
   kept R1/R2 = 8/13
   TG was automatically set to 108
@@ -27,13 +27,13 @@ Do wasabi, then check
   repeat 5x, but discard 3rd one (didn't wait long enough)
      -- waited ~10s between scans
 
-726
+726 cmrf_t1_t2
   Series 5
   kept R1/R2 = 8/13
   TG was automatically set to 108
   repeat 5x
 
-728
+728 cmrf_t1_t2_TG_t1p_300Hz
   Series 6
   kept R1/R2 = 8/13
   TG was automatically set to 108
