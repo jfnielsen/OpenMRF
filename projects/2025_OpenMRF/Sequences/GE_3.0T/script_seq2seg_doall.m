@@ -7,13 +7,12 @@
 is_test = false;  % if true, turn off PNS and max slew checks (for WTools)
 
 % Local path containing all the .seq files you wish to convert to .pge
-seq_file_path = '~/Downloads/OpenMRF/';
 seq_file_path = '~/Downloads/OpenMRF/mrf/';
 
 % Output file name
 tar_file_name= 'OpenMRF-GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
 
-% Scanner hardware settings
+% Scanner hardware settings (for checking compatibility)
 psd_rf_wait = 100e-6;    % RF-gradient delay, scanner specific (s)
 psd_grd_wait = 100e-6;   % ADC-gradient delay, scanner specific (s)
 b1_max = 0.25;           % Gauss
@@ -23,7 +22,10 @@ coil = 'xrm';            % MR750. See pge2.opts()
 sys_ge = pge2.opts(psd_rf_wait, psd_grd_wait, b1_max, g_max, slew_max, coil);
 
 % PNS channel/direction weights
-PNSwt = (1-is_test)*[1 1 1];   
+PNSwt = 0.95 * (1-is_test) * [1 1 1];   
+
+% .entry file number for first scan (any positive integer)
+opuser1 = 721;
 
 % -------------------------------------------------------------------------
 % Convert each .seq file to PulSeg representation and save as .mat file
@@ -39,15 +41,22 @@ system('git rev-parse HEAD > commitID.txt');
 system(sprintf('tar cf %s commitID.txt setup_4_seq2pge.m script_seq2seg_doall.m', tar_file_name));
 removefiles('commitID.txt');
 
+% Initialize pulseq_scans.list file
+fid = fopen('pulseq_scans.list', 'w');
+fprintf(fid, '# opuser1\tscan\n');   
+
 for ii = 1:length(D)
     seq_name = replace(D(ii).name, '.seq', '');
 
-    % Convert to Ceq sequence representation
+    % Update .list file
+    opuser1 = opuser1 + (ii > 1);
+    fprintf(fid, '%d\t%s.mat\n', opuser1, seq_name);
+
+    % Convert to PulSeg sequence representation
     psq = pulseg.fromSeq([D(ii).folder '/' seq_name '.seq']);   % ,'usesRotationEvents', false);
 
     % Check PNS and b1/gradients against scanner limits,
     % and extract some sequence parameters.
-    PNSwt = 0.95*[1 1 1];   % directional PNS weights, see pge2.pns()
     params = pge2.check(psq, sys_ge, 'PNSwt', PNSwt);
 
     % Check accuracy of the psq sequence representation against the .seq file
@@ -66,10 +75,12 @@ for ii = 1:length(D)
     pge2.validate(psq, sys_ge, seq, xml_path, 'row', [], 'plot', false);
 
     % save to .mat file and add it to the tar archive
-    pislquant = 10;  % only relevant for the 'adj_receive_gain.seq' sequence
+    pislquant = 5;  % only relevant for the 'adj_receive_gain.seq' sequence
     save([seq_name '.mat'], 'psq', 'params', 'pislquant');
     system(sprintf('tar --append -f %s %s.mat', tar_file_name, seq_name));
 
     fprintf('\n\n\n%s\n', repmat('-', 1, 79));
 end
+
+fclose(fid);
 
