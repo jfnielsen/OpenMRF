@@ -48,7 +48,7 @@ removefiles('commitID.txt');
 fid = fopen(scans_list_file, 'w');
 fprintf(fid, '# opuser1\tscan\n');   
 
-for ii = 1:length(D)
+for ii = 1:1 %length(D)
     seq_name = replace(D(ii).name, '.seq', '');
 
     % Update .list file
@@ -87,5 +87,5 @@ end
 
 % add .list file to tar archive
 fclose(fid);
-system(sprintf('tar --append -f %s', tar_file_name, scans_list_file));
+system(sprintf('tar --append -f %s %s', tar_file_name, scans_list_file));
 
