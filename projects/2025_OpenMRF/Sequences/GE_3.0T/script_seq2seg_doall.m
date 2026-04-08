@@ -48,7 +48,7 @@ removefiles('commitID.txt');
 fid = fopen(scans_list_file, 'w');
 fprintf(fid, '# opuser1\tscan\n');   
 
-for ii = 1:1 %length(D)
+for ii = 1:length(D)
     seq_name = replace(D(ii).name, '.seq', '');
 
     % Update .list file
@@ -83,6 +83,9 @@ for ii = 1:1 %length(D)
     system(sprintf('tar --append -f %s %s.mat', tar_file_name, seq_name));
 
     fprintf('\n\n\n%s\n', repmat('-', 1, 79));
+
+    % do a dummy write to .pge file for testing only
+    pge2.serialize(psq, 'test.pge', 'pislquant', pislquant, 'params', params);
 end
 
 % add .list file to tar archive
