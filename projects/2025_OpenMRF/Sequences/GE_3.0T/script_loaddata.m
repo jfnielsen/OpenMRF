@@ -1,52 +1,17 @@
 
 % p = pge2.utils.normalizepath('/home/jon/dropbox/Shared/Pulseq/OpenMRF/20260212/Exam8521');
-p = pge2.utils.normalizepath('/home/jon/transfer/Exam8521');
+p = normalizepath('/export/jfnielse/transfer/Exam8793');
 
-% pge722.entry, wasabi
-S = [3 7 8 13];  % series numbers
-for s = S
-    pth = pge2.utils.normalizepath([p 'Series' num2str(s)]);
+% series numbers and correspond .entry numbers
+S = [13 14 15 17 18];
+opuser1 = [721 722 724 726 726];
+
+% load raw data and save to .mat file
+assert(numel(S) == numel(opuser1));
+for ii = 1:length(S)
+    pth = normalizepath([p 'Series' num2str(S(ii))]);
     F = strsplit(ls(pth, '-tr'));   % .h5 file names
-    for ii = 1:length(F)-1
-        d = pge2.utils.loaddata([pth F{ii}]);
-        save(['d_wasabi_series' num2str(s) '_run' num2str(ii)]);
-        pause(2);
-    end
+    d = pge2.utils.loaddata([pth F{end-1}]);
+    save(['d_' num2str(opuser1(ii))], '-v7.3');
+    pause(2);
 end
-
-% pge724.entry, mrf_yun
-S = [4 9];  % series numbers
-for s = S
-    pth = pge2.utils.normalizepath([p 'Series' num2str(s)]);
-    F = strsplit(ls(pth, '-tr'));   % .h5 file names
-    for ii = 1:length(F)-1
-        d = pge2.utils.loaddata([pth F{ii}]);
-        save(['d_mrf_yun_series' num2str(s) '_run' num2str(ii)]);
-        pause(2);
-    end
-end
-
-% pge726.entry, cmrf_t1_t2
-S = [5 10];  % series numbers
-for s = S
-    pth = pge2.utils.normalizepath([p 'Series' num2str(s)]);
-    F = strsplit(ls(pth, '-tr'));   % .h5 file names
-    for ii = 1:length(F)-1
-        d = pge2.utils.loaddata([pth F{ii}]);
-        save(['d_cmrf_t1_t2_series' num2str(s) '_run' num2str(ii)]);
-        pause(2);
-    end
-end
-
-% pge728.entry, cmrf_t1_t2_t1p_300Hz
-S = [6 11];  % series numbers
-for s = S
-    pth = pge2.utils.normalizepath([p 'Series' num2str(s)]);
-    F = strsplit(ls(pth, '-tr'));   % .h5 file names
-    for ii = 1:length(F)-1
-        d = pge2.utils.loaddata([pth F{ii}]);
-        save(['d_cmrf_t1_t2_g1p_300Hz_series' num2str(s) '_run' num2str(ii)]);
-        pause(2);
-    end
-end
-
