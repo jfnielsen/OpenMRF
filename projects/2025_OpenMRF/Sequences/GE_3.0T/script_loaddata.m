@@ -12,6 +12,6 @@ for ii = 1:length(S)
     pth = normalizepath([p 'Series' num2str(S(ii))]);
     F = strsplit(ls(pth, '-tr'));   % .h5 file names
     d = pge2.utils.loaddata([pth F{end-1}]);
-    save(['d_' num2str(opuser1(ii))], '-v7.3');
-    pause(2);
+    save(sprintf('d_Series_%d_opuser1_%d', S(ii), opuser1(ii)), '-v7.3');
+    pause(1);
 end
