@@ -78,7 +78,7 @@ for ii = 1:length(D)
     pge2.validate(psq, sys_ge, seq, xml_path, 'row', [], 'plot', false);
 
     % save to .mat file and add it to the tar archive
-    pislquant = 5;  % only relevant for the 'adj_receive_gain.seq' sequence
+    pislquant = 2;  % only relevant for the 'adj_receive_gain.seq' sequence
     save([seq_name '.mat'], 'psq', 'params', 'pislquant');
     system(sprintf('tar --append -f %s %s.mat', tar_file_name, seq_name));
 
