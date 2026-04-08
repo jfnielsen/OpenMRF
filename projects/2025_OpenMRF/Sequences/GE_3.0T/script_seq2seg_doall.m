@@ -27,6 +27,9 @@ PNSwt = 0.95 * (1-is_test) * [1 1 1];
 % .entry file number for first scan (any positive integer)
 opuser1 = 721;
 
+% Pulseq scan list file (for interactive FOV prescription on scanner)
+scans_list_file = 'pulseq_scans.list';
+
 % -------------------------------------------------------------------------
 % Convert each .seq file to PulSeg representation and save as .mat file
 % -------------------------------------------------------------------------
@@ -42,7 +45,7 @@ system(sprintf('tar cf %s commitID.txt setup_4_seq2pge.m script_seq2seg_doall.m'
 removefiles('commitID.txt');
 
 % Initialize pulseq_scans.list file
-fid = fopen('pulseq_scans.list', 'w');
+fid = fopen(scans_list_file, 'w');
 fprintf(fid, '# opuser1\tscan\n');   
 
 for ii = 1:length(D)
@@ -82,5 +85,7 @@ for ii = 1:length(D)
     fprintf('\n\n\n%s\n', repmat('-', 1, 79));
 end
 
+% add .list file to tar archive
 fclose(fid);
+system(sprintf('tar --append -f %s', tar_file_name, scans_list_file));
 
