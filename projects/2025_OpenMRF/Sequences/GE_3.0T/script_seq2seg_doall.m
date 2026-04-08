@@ -22,7 +22,7 @@ coil = 'xrm';            % MR750. See pge2.opts()
 sys_ge = pge2.opts(psd_rf_wait, psd_grd_wait, b1_max, g_max, slew_max, coil);
 
 % PNS channel/direction weights
-PNSwt = 0.95 * (1-is_test) * [1 1 1];   
+PNSwt = 0.9 * (1-is_test) * [1 1 1];   
 
 % .entry file number for first scan (any positive integer)
 opuser1 = 721;
