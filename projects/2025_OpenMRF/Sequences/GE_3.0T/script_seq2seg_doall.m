@@ -4,13 +4,20 @@
 % EDIT THIS SECTION AS NEEDED 
 % -------------------------------------------------------------------------
 
-is_test = false;  % if true, turn off PNS and max slew checks (for WTools)
+is_test = true;  % if true, turn off PNS and max slew checks (for WTools)
+is_traj = true;
 
 % Local path containing all the .seq files you wish to convert to .pge
-seq_file_path = '~/Downloads/OpenMRF/mrf/';
-
-% Output file name
-tar_file_name= 'OpenMRF-GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
+%seq_file_path = '~/Downloads/OpenMRF/mrf/';
+if is_traj
+    seq_file_path = '~/Downloads/OpenMRF/traj_ge/';
+    tar_file_name= 'OpenMRF-traj_GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
+    opuser1 = 731;   % .entry file number for first scan (any positive integer)
+else
+    seq_file_path = '~/Downloads/OpenMRF/mrf/';
+    tar_file_name= 'OpenMRF-GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
+    opuser1 = 721;
+end
 
 % Scanner hardware settings (for checking compatibility)
 psd_rf_wait = 100e-6;    % RF-gradient delay, scanner specific (s)
@@ -23,9 +30,6 @@ sys_ge = pge2.opts(psd_rf_wait, psd_grd_wait, b1_max, g_max, slew_max, coil);
 
 % PNS channel/direction weights
 PNSwt = 0.9 * (1-is_test) * [1 1 1];   
-
-% .entry file number for first scan (any positive integer)
-opuser1 = 721;
 
 % Pulseq scan list file (for interactive FOV prescription on scanner)
 scans_list_file = 'pulseq_scans.list';
@@ -84,8 +88,9 @@ for ii = 1:length(D)
 
     fprintf('\n\n\n%s\n', repmat('-', 1, 79));
 
-    % do a dummy write to .pge file for testing only
-    pge2.serialize(psq, 'test.pge', 'pislquant', pislquant, 'params', params);
+    % write to .pge file and add it to the tar archive
+    pge2.serialize(psq, [seq_name '.pge'], 'pislquant', pislquant, 'params', params);
+    system(sprintf('tar --append -f %s %s.pge', tar_file_name, seq_name));
 end
 
 % add .list file to tar archive
