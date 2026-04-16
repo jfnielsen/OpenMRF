@@ -5,12 +5,12 @@
 % -------------------------------------------------------------------------
 
 is_test = true;  % if true, turn off PNS and max slew checks (for WTools)
-is_traj = true;
+is_traj = true;  % trajectory mapping or not
 
 % Local path containing all the .seq files you wish to convert to .pge
 %seq_file_path = '~/Downloads/OpenMRF/mrf/';
 if is_traj
-    seq_file_path = '~/Downloads/OpenMRF/traj_ge/';
+    seq_file_path = '~/Downloads/OpenMRF/traj_GE';
     tar_file_name= 'OpenMRF-traj_GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
     opuser1 = 731;   % .entry file number for first scan (any positive integer)
 else
@@ -38,7 +38,6 @@ scans_list_file = 'pulseq_scans.list';
 % Convert each .seq file to PulSeg representation and save as .mat file
 % -------------------------------------------------------------------------
 
-seq_file_path = ensuretrailingslash(seq_file_path);
 seq_file_path = normalizepath(seq_file_path);
 
 D = dir([seq_file_path '*.seq']);
@@ -65,6 +64,9 @@ for ii = 1:length(D)
     % Check PNS and b1/gradients against scanner limits,
     % and extract some sequence parameters.
     params = pge2.check(psq, sys_ge, 'PNSwt', PNSwt);
+    if is_test
+        params.smax = 0;
+    end
 
     % Check accuracy of the psq sequence representation against the .seq file
     sys = mr.opts('maxGrad', sys_ge.g_max*10, 'gradUnit','mT/m', ...
