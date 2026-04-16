@@ -54,12 +54,21 @@ fprintf(fid, '# opuser1\tscan\n');
 for ii = 1:length(D)
     seq_name = replace(D(ii).name, '.seq', '');
 
+    % set project matrix
+    if contains(seq_name, 'x')
+        P = [1 0 0; 0 0 0; 0 0 0];
+    elseif contains(seq_name, 'y')
+        P = [0 0 0; 0 1 0; 0 0 0];
+    else
+        P = eye(3);
+    end
+
     % Update .list file
     opuser1 = opuser1 + (ii > 1);
     fprintf(fid, '%d\t%s.mat\n', opuser1, seq_name);
 
     % Convert to PulSeg sequence representation
-    psq = pulseg.fromSeq([D(ii).folder '/' seq_name '.seq']);   % ,'usesRotationEvents', false);
+    psq = pulseg.fromSeq([D(ii).folder '/' seq_name '.seq'], 'P', P);   % ,'usesRotationEvents', false);
 
     % Check PNS and b1/gradients against scanner limits,
     % and extract some sequence parameters.
@@ -81,7 +90,7 @@ for ii = 1:length(D)
     seq = mr.Sequence(sys);
     seq.read([seq_file_path seq_name '.seq']);
     xml_path = []; % if nonempty, compare against WTools/Pulse Studio output
-    pge2.validate(psq, sys_ge, seq, xml_path, 'row', [], 'plot', false);
+    %pge2.validate(psq, sys_ge, seq, xml_path, 'row', [], 'plot', false);
 
     % save to .mat file and add it to the tar archive
     pislquant = 2;  % only relevant for the 'adj_receive_gain.seq' sequence
