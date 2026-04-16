@@ -10,8 +10,8 @@ is_traj = true;  % trajectory mapping or not
 % Local path containing all the .seq files you wish to convert to .pge
 %seq_file_path = '~/Downloads/OpenMRF/mrf/';
 if is_traj
-    seq_file_path = '~/Downloads/OpenMRF/traj_GE';
-    tar_file_name= 'OpenMRF-traj_GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
+    seq_file_path = '~/Downloads/OpenMRF/traj';
+    tar_file_name= 'OpenMRF-traj-GE-' + replace(string(datetime), {':', ' '}, '-') + '.tar';
     opuser1 = 731;   % .entry file number for first scan (any positive integer)
 else
     seq_file_path = '~/Downloads/OpenMRF/mrf/';
@@ -54,11 +54,11 @@ fprintf(fid, '# opuser1\tscan\n');
 for ii = 1:length(D)
     seq_name = replace(D(ii).name, '.seq', '');
 
-    % set project matrix
+    % set projection matrix
     if contains(seq_name, 'x')
-        P = [1 0 0; 0 0 0; 0 0 0];
+        P = [1 0 0; 0 0 0; 0 0 1];
     elseif contains(seq_name, 'y')
-        P = [0 0 0; 0 1 0; 0 0 0];
+        P = [0 0 0; 0 1 0; 0 0 1];
     else
         P = eye(3);
     end
@@ -90,7 +90,7 @@ for ii = 1:length(D)
     seq = mr.Sequence(sys);
     seq.read([seq_file_path seq_name '.seq']);
     xml_path = []; % if nonempty, compare against WTools/Pulse Studio output
-    %pge2.validate(psq, sys_ge, seq, xml_path, 'row', [], 'plot', false);
+    pge2.validate(psq, sys_ge, seq, xml_path, 'row', [], 'plot', false);
 
     % save to .mat file and add it to the tar archive
     pislquant = 2;  % only relevant for the 'adj_receive_gain.seq' sequence
